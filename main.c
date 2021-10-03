@@ -62,32 +62,48 @@ double Ad[N * N], Bd[N * N], Cd[N * N];
 
 int main(int argc, char *argv[])
 {
-    parced_args pargs = parse_arguments(argc, argv);
+    parsed_args pargs = parse_arguments(argc, argv);
+    printf("Print - %d\n", pargs.prStatus);
     char *PName = argv[1];
-    printf("Optimization: %s\n", pargs.opt);
-    printf("Processor name:%s\n", PName);
-    printf("Operations count: ~%ld\n", (long)N * (long)N * (long)N * (long)2 * (long)2 * (long)2 * (long)15);
-    printf("dgemm_int repeats: %d\ndgemm_float repeats:%d\ndgemm_int repeats:%d\n", pargs.int_runs, pargs.float_runs, pargs.double_runs);
+    if (pargs.prStatus != 0)
+    {
+        printf("Optimization: %s\n", pargs.opt);
+        printf("Processor name:%s\n", PName);
+        printf("Operations count: ~%ld\n", (long)N * (long)N * (long)N * (long)2 * (long)2 * (long)2 * (long)15);
+        printf("dgemm_int repeats: %d\ndgemm_float repeats:%d\ndgemm_int repeats:%d\n", pargs.int_runs, pargs.float_runs, pargs.double_runs);
+    }
 
     double t = hpctimer_getwtime();
     init_matrixi(Ai, Bi, Ci, N);
     t = hpctimer_getwtime() - t;
-    printf("Init INT matrix - %lf\n", t);
+    if (pargs.prStatus != 0)
+    {
+        printf("Init INT matrix - %lf\n", t);
+    }
 
     t = hpctimer_getwtime();
     init_matrixf(Af, Bf, Cf, N);
     t = hpctimer_getwtime() - t;
-    printf("Init FLOAT matrix - %lf\n", t);
+    if (pargs.prStatus != 0)
+    {
+        printf("Init FLOAT matrix - %lf\n", t);
+    }
 
     t = hpctimer_getwtime();
     init_matrixd(Ad, Bd, Cd, N);
     t = hpctimer_getwtime() - t;
-    printf("Init DOUBLE matrix - %lf\n", t);
+    if (pargs.prStatus != 0)
+    {
+        printf("Init DOUBLE matrix - %lf\n", t);
+    }
 
     double t_all = 0, t_avr = 0;
     FILE *result_file = fopen("results.csv", "a");
     //run int dgemm
-    printf("*************INT DGEMM*************\n");
+    if (pargs.prStatus != 0)
+    {
+        printf("*************INT DGEMM*************\n");
+    }
     out_res int_dgemm[pargs.int_runs];
     for (int i = 0; i < pargs.int_runs; i++)
     {
@@ -97,7 +113,10 @@ int main(int argc, char *argv[])
         t = hpctimer_getwtime() - t;
         int_dgemm[i].Time = t;
         t_all += t;
-        printf("INT DGEMM> Time of %d run: %lf\n", i, t);
+        if (pargs.prStatus != 0)
+        {
+            printf("INT DGEMM> Time of %d run: %lf\n", i, t);
+        }
     }
     t_avr = t_all / pargs.int_runs;
     for (int i = 0; i < pargs.int_runs; i++)
@@ -115,14 +134,20 @@ int main(int argc, char *argv[])
         int_dgemm[i].RelError = int_dgemm[i].AbsError / int_dgemm[i].AvTime;
 
         int_dgemm[i].TaskPerf = int_dgemm[i].InsCount / int_dgemm[i].Time / POINTS_TRESHOLD;
+
         print_out_res_file(int_dgemm[i], result_file);
-        print_out_res(int_dgemm[i]);
+        if (pargs.prStatus != 0)
+        {
+            print_out_res(int_dgemm[i]);
+        }
     }
     t_all = 0;
     t_avr = 0;
-
     //run float dgemm
-    printf("\n*************FLOAT DGEMM*************\n");
+    if (pargs.prStatus != 0)
+    {
+        printf("\n*************FLOAT DGEMM*************\n");
+    }
     out_res float_dgemm[pargs.float_runs];
     for (int i = 0; i < pargs.float_runs; i++)
     {
@@ -132,7 +157,10 @@ int main(int argc, char *argv[])
         t = hpctimer_getwtime() - t;
         float_dgemm[i].Time = t;
         t_all += t;
-        printf("FLOAT DGEMM> Time of %d run: %lf\n", i + 1, t);
+        if (pargs.prStatus != 0)
+        {
+            printf("FLOAT DGEMM> Time of %d run: %lf\n", i + 1, t);
+        }
     }
     t_avr = t_all / pargs.float_runs;
     for (int i = 0; i < pargs.float_runs; i++)
@@ -150,14 +178,20 @@ int main(int argc, char *argv[])
         float_dgemm[i].RelError = float_dgemm[i].AbsError / float_dgemm[i].AvTime;
 
         float_dgemm[i].TaskPerf = float_dgemm[i].InsCount / float_dgemm[i].Time / POINTS_TRESHOLD;
+
         print_out_res_file(float_dgemm[i], result_file);
-        print_out_res(float_dgemm[i]);
+        if (pargs.prStatus != 0)
+        {
+            print_out_res(float_dgemm[i]);
+        }
     }
     t_all = 0;
     t_avr = 0;
-
     //run double dgemm
-    printf("\n*************DOUBLE DGEMM*************\n");
+    if (pargs.prStatus != 0)
+    {
+        printf("\n*************DOUBLE DGEMM*************\n");
+    }
     out_res double_dgemm[pargs.double_runs];
     for (int i = 0; i < pargs.double_runs; i++)
     {
@@ -167,7 +201,10 @@ int main(int argc, char *argv[])
         t = hpctimer_getwtime() - t;
         double_dgemm[i].Time = t;
         t_all += t;
-        printf("DOUBLE DGEMM> Time of %d run: %lf\n", i, t);
+        if (pargs.prStatus != 0)
+        {
+            printf("DOUBLE DGEMM> Time of %d run: %lf\n", i, t);
+        }
     }
     t_avr = t_all / pargs.double_runs;
     for (int i = 0; i < pargs.double_runs; i++)
@@ -186,10 +223,114 @@ int main(int argc, char *argv[])
 
         double_dgemm[i].TaskPerf = double_dgemm[i].InsCount / double_dgemm[i].Time / POINTS_TRESHOLD;
         print_out_res_file(double_dgemm[i], result_file);
-        print_out_res(double_dgemm[i]);
+        if (pargs.prStatus != 0)
+        {
+            print_out_res(double_dgemm[i]);
+        }
     }
+    FILE *Opt_gp;
     t_all = 0;
     t_avr = 0;
+    if (strcmp_m(pargs.opt, "-O0") != -1)
+    {
+        Opt_gp = fopen("Opt0.txt", "w");
+        for (int i = 0; i < 10; i++)
+        {
+            fprintf(Opt_gp, "%d %ld\n", i, int_dgemm[i].TaskPerf);
+        }
+        FILE *OpTypeInt_gp, *OpTypeFloat_gp, *OpTypeDouble_gp;
+        FILE *v1, *v2;
+        OpTypeInt_gp = fopen("int.txt", "w");
+        for (int i = 0; i < 10; i++)
+        {
+            fprintf(OpTypeInt_gp, "%d %ld\n", i, int_dgemm[i].TaskPerf);
+        }
+        OpTypeFloat_gp = fopen("float.txt", "w");
+        for (int i = 0; i < 10; i++)
+        {
+            fprintf(OpTypeFloat_gp, "%d %ld\n", i, float_dgemm[i].TaskPerf);
+        }
+        OpTypeDouble_gp = fopen("double.txt", "w");
+        for (int i = 0; i < 10; i++)
+        {
+            fprintf(OpTypeDouble_gp, "%d %ld\n", i, double_dgemm[i].TaskPerf);
+        }
+    }
+    else if (strcmp_m(pargs.opt, "-O1") != -1)
+    {
+        Opt_gp = fopen("Opt1.txt", "w");
+        for (int i = 0; i < 10; i++)
+        {
+            fprintf(Opt_gp, "%d %ld\n", i, int_dgemm[i].TaskPerf);
+        }
+        FILE *OpTypeInt_gp, *OpTypeFloat_gp, *OpTypeDouble_gp;
+        FILE *v1, *v2;
+        OpTypeInt_gp = fopen("int1.txt", "w");
+        for (int i = 0; i < 10; i++)
+        {
+            fprintf(OpTypeInt_gp, "%d %ld\n", i, int_dgemm[i].TaskPerf);
+        }
+        OpTypeFloat_gp = fopen("float1.txt", "w");
+        for (int i = 0; i < 10; i++)
+        {
+            fprintf(OpTypeFloat_gp, "%d %ld\n", i, float_dgemm[i].TaskPerf);
+        }
+        OpTypeDouble_gp = fopen("double1.txt", "w");
+        for (int i = 0; i < 10; i++)
+        {
+            fprintf(OpTypeDouble_gp, "%d %ld\n", i, double_dgemm[i].TaskPerf);
+        }
+    }
+    else if (strcmp_m(pargs.opt, "-O2") != -1)
+    {
+        Opt_gp = fopen("Opt2.txt", "w");
+        for (int i = 0; i < 10; i++)
+        {
+            fprintf(Opt_gp, "%d %ld\n", i, int_dgemm[i].TaskPerf);
+        }
+        FILE *OpTypeInt_gp, *OpTypeFloat_gp, *OpTypeDouble_gp;
+        FILE *v1, *v2;
+        OpTypeInt_gp = fopen("int2.txt", "w");
+        for (int i = 0; i < 10; i++)
+        {
+            fprintf(OpTypeInt_gp, "%d %ld\n", i, int_dgemm[i].TaskPerf);
+        }
+        OpTypeFloat_gp = fopen("float2.txt", "w");
+        for (int i = 0; i < 10; i++)
+        {
+            fprintf(OpTypeFloat_gp, "%d %ld\n", i, float_dgemm[i].TaskPerf);
+        }
+        OpTypeDouble_gp = fopen("double2.txt", "w");
+        for (int i = 0; i < 10; i++)
+        {
+            fprintf(OpTypeDouble_gp, "%d %ld\n", i, double_dgemm[i].TaskPerf);
+        }
+    }
+    else if (strcmp_m(pargs.opt, "-O3") != -1)
+    {
+        Opt_gp = fopen("Opt3.txt", "w");
+        for (int i = 0; i < 10; i++)
+        {
+            fprintf(Opt_gp, "%d %ld\n", i, int_dgemm[i].TaskPerf);
+        }
+        FILE *OpTypeInt_gp, *OpTypeFloat_gp, *OpTypeDouble_gp;
+        FILE *v1, *v2;
+        OpTypeInt_gp = fopen("int3.txt", "w");
+        for (int i = 0; i < 10; i++)
+        {
+            fprintf(OpTypeInt_gp, "%d %ld\n", i, int_dgemm[i].TaskPerf);
+        }
+        OpTypeFloat_gp = fopen("float3.txt", "w");
+        for (int i = 0; i < 10; i++)
+        {
+            fprintf(OpTypeFloat_gp, "%d %ld\n", i, float_dgemm[i].TaskPerf);
+        }
+        OpTypeDouble_gp = fopen("double3.txt", "w");
+        for (int i = 0; i < 10; i++)
+        {
+            fprintf(OpTypeDouble_gp, "%d %ld\n", i, double_dgemm[i].TaskPerf);
+        }
+    }
     printf("All TaskPerf divided by %d\n", POINTS_TRESHOLD);
     return 0;
 }

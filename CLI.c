@@ -26,17 +26,20 @@ void arg_init()
     arguments[4] = "-O1";
     arguments[5] = "-O2";
     arguments[6] = "-O3";
+    arguments[7] = "--printf";
 }
 
-parced_args parse_arguments(int argc, char *argv[])
+parsed_args parse_arguments(int argc, char *argv[])
 {
-    parced_args runtimes;
+    parsed_args runtimes;
 
     arg_init();
 
     runtimes.int_runs = 10;
     runtimes.float_runs = 10;
     runtimes.double_runs = 10;
+    runtimes.opt = "-O0";
+    runtimes.prStatus = 1;
 
     int _iarg = 0, _farg = 0, _darg = 0;
     int status = -1;
@@ -44,7 +47,7 @@ parced_args parse_arguments(int argc, char *argv[])
     for (int i = 0; i < argc; i++)
     {
         //printf("%s\n", argv[i]);
-        for (int j = 0; j < 7; j++)
+        for (int j = 0; j < 8; j++)
         {
             status = strcmp_m(arguments[j], argv[i]);
             // printf("  s-%d\n", status);
@@ -75,6 +78,7 @@ parced_args parse_arguments(int argc, char *argv[])
                         runtimes.double_runs = parsed_arg;
                     }
                     break;
+
                 case 3:
                     runtimes.opt = "-O0";
                     break;
@@ -87,10 +91,15 @@ parced_args parse_arguments(int argc, char *argv[])
                 case 6:
                     runtimes.opt = "-O3";
                     break;
+
+                case 7:
+                    runtimes.prStatus = parsed_arg;
+                    break;
                 }
             }
-            //printf(" %d\n", j);
         }
+        //printf(" %d\n", j);
+
         //printf("%d\n", i);
     }
     return runtimes;

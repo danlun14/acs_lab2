@@ -9,9 +9,11 @@ typedef struct
     int double_runs;
     int int_runs;
     char *opt;
-} parced_args;
+    int prStatus;
+} parsed_args;
 
-parced_args parse_arguments(int argc, char *argv[]);
+int strcmp_m(const char *arg, const char *ava_arg);
+parsed_args parse_arguments(int argc, char *argv[]);
 void arg_init();
 
 #endif

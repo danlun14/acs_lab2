@@ -3,7 +3,7 @@
 
 enum
 {
-    N = 1024
+    N = 256
 };
 
 void init_matrixi(int *a, int *b, int *c, int n);
